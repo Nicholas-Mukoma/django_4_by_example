@@ -2,7 +2,7 @@ from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
 from django.urls import reverse # url resolver
-
+from PIL import Image
 
 class PublishedManager(models.Manager):
     def get_queryset(self):
@@ -11,9 +11,8 @@ class PublishedManager(models.Manager):
 
 # Create your models here.
 class Post(models.Model):
-
     class Status(models.TextChoices):
-        DRAFT = 'DF' , 'Draft'
+        DRAFT = 'DF', 'Draft'
         PUBLISHED = 'PB', 'Published'
 
     title = models.CharField(max_length = 250)
@@ -24,7 +23,27 @@ class Post(models.Model):
     publish = models.DateTimeField(default=timezone.now)
     created = models.DateTimeField(auto_now_add = True)
     updated = models.DateTimeField(auto_now = True)
-    status = models.CharField(max_length=2,choices=Status.choices,default=Status.DRAFT)
+    image =models.ImageField(null=True,blank=True,upload_to='images/')
+    thumbnail = models.ImageField(null = True, blank = True, upload_to='thumbnails/')
+    status = models.CharField(max_length=2,choices=Status.choices,default = Status.DRAFT)
+    
+    # overiding save method
+    #def save(self, *args, **kwargs):
+      #super(Post, self).save(*args, **kwargs)
+    def resizer(self):  
+        if self.image:
+            img = Image.open(self.image)
+            # img.save(self.image.path)
+            size = (800, 600)
+            thumb_size = (100,100)
+            img.resize(size)
+            thumb = img.thumbnail(thumb_size)
+            #thumbnail_path = self.image.path.replace('images/','thumbnails/')
+            img.save(self.image.path)
+            thumb.save(self.thumbnail.path)
+            #self.thumbnail.name = thumbnail_path.split('media/')[-1]
+            #self.save(update_fields = ['thumbnail'])
+
 
     published = PublishedManager()
     

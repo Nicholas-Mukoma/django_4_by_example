@@ -1,0 +1,18 @@
+{% extends "blog/base.html" %}
+
+{% block title%}Upload a Post{% endblock %}
+
+{% block content %}
+    {% if submit %}
+        <h2>You Have successfully Posted</h2>
+    {% else %}
+    <h2>upload a post</h2>
+    <form  method= "post" enctype = "multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <div>
+        <input type = "submit" value="Upload Post">
+        </div>
+    </form>
+    {% endif %}
+{% endblock %}

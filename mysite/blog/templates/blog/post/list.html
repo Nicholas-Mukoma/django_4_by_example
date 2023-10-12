@@ -5,13 +5,18 @@
 {% block content%}
     <h1>My Blog</h1>
     {% for post in posts%}
-        <h2>
+        
+       <h2>
             <a href="{{ post.get_absolute_url}}">{{ post.title }}
 
             </a>
+            {% if post.thumbnail %}
+            <a href="{{ post.get_absolute_url }}"><img src=" {{ post.thumbnail.url }}"></a>
+            {% endif %}
         </h2>
         <p class = "date">
             Published {{post.publish}} by {{post.author}}
+     
         </p>
         {{post.body|truncatewords:3|linebreaks }}
     {% endfor %}

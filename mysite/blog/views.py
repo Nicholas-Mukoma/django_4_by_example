@@ -1,16 +1,17 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from .models import Post, Comment
-from .forms import EmailPostForm, CommentForm
+from .forms import EmailPostForm, CommentForm, BlogPostForm
 from django.core.mail import send_mail
 from django.core.paginator import Paginator , EmptyPage , PageNotAnInteger
 from django.views.generic import ListView # Allow to list any type of objects
 from django.views.decorators.http import require_POST
-
+from PIL import Image
 
 # function based post list view
 '''def post_list(request):
     post_list = Post.published.all()
-    # pagination with 3 posts per page
+    
+   # pagination with 3 posts per page
     paginator = Paginator(post_list, 3)
     page_number = request.GET.get('page')
     # 1. handling emptypage/page out of range error
@@ -23,7 +24,7 @@ from django.views.decorators.http import require_POST
         # if page is not an interger deliver first page
         posts = paginator.page(1)
    # normal posts = paginator.page(page_number)
-    return render(request,'blog/post/list.html',{'posts': posts}) '''
+    return render(request,'blog/post/list.html',{'posts': posts})'''
 
 # Class Based Post_List View
 class PostListView(ListView):
@@ -31,7 +32,7 @@ class PostListView(ListView):
     context_object_name = 'posts' # default name is object_list
     paginate_by = 3 # defines pagination
     template_name = 'blog/post/list.html'
-
+    
 from django.http import Http404
 
 def post_detail(request, year, month, day,post):
@@ -44,7 +45,9 @@ def post_detail(request, year, month, day,post):
                              slug=post,
                              publish__year = year,
                              publish__month = month,
-                             publish__day = day)
+                             publish__day = day,
+                             )
+    
     
     comments = post.comments.filter(active = True) # list of active comments for this post
     form = CommentForm()
@@ -52,6 +55,22 @@ def post_detail(request, year, month, day,post):
     return render(request,'blog/post/detail.html',{'post': post,
                                                    'comments': comments,
                                                    'form': form})
+
+
+def upload_post(request):
+   
+    if request.method == 'POST':
+        form = BlogPostForm(request.POST, request.FILES)
+        if form.is_valid():
+           post = form.save(commit = False)
+           post.save()
+         
+    else:
+        form = BlogPostForm()
+    return render(
+        request, 'blog/post/upload_post.html',{'form':form}
+    )
+
 
 # Sharing posts via email
 from .forms import EmailPostForm
