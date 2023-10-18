@@ -1,5 +1,70 @@
-# created by virtualenv automatically
+#sample .gitignore
 
 bin/
 lib/
 lib64/
+
+
+
+# Ignore CPython-generated files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Ignore database files
+db.sqlite3
+
+# Ignore media and static files (if used for development)
+media/
+static/
+
+# Ignore secret settings and keys
+*.env
+
+# Ignore system files
+.DS_Store
+Thumbs.db
+
+# Ignore IDE/Editor specific files and directories
+.idea/
+.vscode/
+
+
+### Python template
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+
+# Django stuff:
+*.log
+db.sqlite3
+
+
+# IPython
+profile_default/
+ipython_config.py
+
+# Environments
+venv/
+.env 
+.venv 
+env/
+virtualenv/
+
+
+# Secrets
+secrets.json
+.vscode/
+/.vscode/
+/.vscode/settings.json
+
+
+#migration files
+*/migrations/*

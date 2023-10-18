@@ -12,5 +12,5 @@ urlpatterns = [
     path('<int:post_id>/share/', views.post_share, name = 'post_share' ),
     path('<int:post_id>/comment/',views.post_comment, name = 'post_comment'),
     path('upload/', views.upload_post, name = 'upload_post'),
-    path('login/', views.login_user, name = 'login')
+    #path('login/', views.login_user, name = 'login'),
 ] 
