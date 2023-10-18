@@ -1,7 +1,8 @@
 from django.db import models
 from django.utils import timezone
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, AbstractUser
 from django.urls import reverse # url resolver
+from django.utils.text import slugify
 from PIL import Image
 
 class PublishedManager(models.Manager):
@@ -26,10 +27,13 @@ class Post(models.Model):
     image =models.ImageField(null=True,blank=True,upload_to='images/')
     thumbnail = models.ImageField(null = True, blank = True, upload_to='thumbnails/')
     status = models.CharField(max_length=2,choices=Status.choices,default = Status.DRAFT)
-    
     # overiding save method
-    #def save(self, *args, **kwargs):
-      #super(Post, self).save(*args, **kwargs)
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.title)
+            super(Post, self).save(*args, **kwargs)
+   
     def resizer(self):  
         if self.image:
             img = Image.open(self.image)
@@ -79,3 +83,5 @@ class Comment(models.Model):
 
     def __str__(self):
         return f'Comment by {self.name} on {self.post}'
+
+

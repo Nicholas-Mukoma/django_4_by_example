@@ -11,7 +11,10 @@
 
             </a>
             {% if post.thumbnail %}
-            <a href="{{ post.get_absolute_url }}"><img src=" {{ post.thumbnail.url }}"></a>
+            <a href="{{ post.get_absolute_url }}"><img src=" {{ post.thumbnail.url }}"
+                style = "width : 50px; height: 30px;"
+              
+                ></a>
             {% endif %}
         </h2>
         <p class = "date">

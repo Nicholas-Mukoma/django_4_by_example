@@ -1,10 +1,12 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Post, Comment
-from .forms import EmailPostForm, CommentForm, BlogPostForm
+from .forms import EmailPostForm, CommentForm, BlogPostForm, LoginForm
 from django.core.mail import send_mail
 from django.core.paginator import Paginator , EmptyPage , PageNotAnInteger
 from django.views.generic import ListView # Allow to list any type of objects
 from django.views.decorators.http import require_POST
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import authenticate, login
 from PIL import Image
 
 # function based post list view
@@ -56,20 +58,41 @@ def post_detail(request, year, month, day,post):
                                                    'comments': comments,
                                                    'form': form})
 
-
+@login_required
 def upload_post(request):
-   
+
     if request.method == 'POST':
         form = BlogPostForm(request.POST, request.FILES)
         if form.is_valid():
            post = form.save(commit = False)
+           post.author = request.user #assignig author to be the user
            post.save()
+           
+           
          
     else:
         form = BlogPostForm()
     return render(
         request, 'blog/post/upload_post.html',{'form':form}
     )
+
+
+def login_user(request):
+    if request.method == "POST":
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            user = authenticate(request, username = username, password = password)
+
+            if user is not None:
+                login(request, user)
+               
+            else:
+                form.add_error(None, 'Invalid username or password')
+        else:
+            form = LoginForm()
+        return render(request, 'blog/login.html', {'form':form})
 
 
 # Sharing posts via email
@@ -99,7 +122,8 @@ def post_share(request, post_id):
 
 @require_POST # allows POST
 def post_comment(request, post_id):
-    post = get_object_or_404(Post,id = post_id, status = Post.Status.PUBLISHED)
+    post = get_object_or_404(Post,id = post_id, status = Post.Status.PUBLISHED
+                             )
     comment = None
     form = CommentForm(data = request.POST) # a comment was posted
     if form.is_valid():

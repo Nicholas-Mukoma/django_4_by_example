@@ -16,4 +16,9 @@ class CommentForm(forms.ModelForm):
 class BlogPostForm(forms.ModelForm):
     class Meta:
         model = Post
-        fields = ['author','title','body','image']
+        fields = ['title','body','image']
+
+
+class LoginForm(forms.Form):
+    username = forms.CharField(max_length=150)
+    password = forms.CharField(widget=forms.PasswordInput)
