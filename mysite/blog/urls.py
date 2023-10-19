@@ -13,5 +13,10 @@ urlpatterns = [
     path('<int:post_id>/share/', views.post_share, name = 'post_share' ),
     path('<int:post_id>/comment/',views.post_comment, name = 'post_comment'),
     path('upload/', views.upload_post, name = 'upload_post'),
+<<<<<<< HEAD
     path('login/', views.login_user, name = 'login')
 ]
+=======
+    #path('login/', views.login_user, name = 'login'),
+] 
+>>>>>>> e1bc373c4176b3f7c5e4a778050847fbab40d64f
