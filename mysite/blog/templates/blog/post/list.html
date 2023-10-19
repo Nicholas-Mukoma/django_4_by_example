@@ -4,24 +4,39 @@
 
 {% block content%}
     <h1>My Blog</h1>
+    <!--if a user is accessing the blog,they will see a list of all posts
+    if they filter by posts tagged with a specific tag,they will see the tag they are filtering by-->
+    {% if tag %}
+        <h2> Posts tagged with "{{ tag.name }}"</h2>
+    {% endif %}
     {% for post in posts%}
         
        <h2>
             <a href="{{ post.get_absolute_url}}">{{ post.title }}
 
             </a>
-            {% if post.thumbnail %}
-            <a href="{{ post.get_absolute_url }}"><img src=" {{ post.thumbnail.url }}"
+            {% if post.image %}
+            <a href="{{ post.get_absolute_url }}"><img src=" {{ post.image.url }}"
                 style = "width : 50px; height: 30px;"
               
                 ></a>
             {% endif %}
         </h2>
+        
+        <p class = "tags">
+            Tags:
+            {% for tags in post.tags.all %}
+                <a href="{% url 'blog:post_list_by_tag' tag.slug %}">
+                    {{ tag.name }}
+                </a>
+                {% if not forloop.last %},{% endif %}
+            {% endfor %}
+        
         <p class = "date">
             Published {{post.publish}} by {{post.author}}
      
         </p>
         {{post.body|truncatewords:3|linebreaks }}
     {% endfor %}
-    {% include "pagination/pagination.html" with page=page_obj%}
+    {% include "pagination/pagination.html" with page=posts%}
 {% endblock%}

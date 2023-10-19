@@ -4,6 +4,8 @@ from django.contrib.auth.models import User, AbstractUser
 from django.urls import reverse # url resolver
 from django.utils.text import slugify
 from PIL import Image
+from taggit.managers import TaggableManager
+
 
 class PublishedManager(models.Manager):
     def get_queryset(self):
@@ -25,8 +27,10 @@ class Post(models.Model):
     created = models.DateTimeField(auto_now_add = True)
     updated = models.DateTimeField(auto_now = True)
     image =models.ImageField(null=True,blank=True,upload_to='images/')
-    thumbnail = models.ImageField(null = True, blank = True, upload_to='thumbnails/')
+   
     status = models.CharField(max_length=2,choices=Status.choices,default = Status.DRAFT)
+    tags = TaggableManager()# allows to add,retrieve and remove tags
+    
     # overiding save method
 
     def save(self, *args, **kwargs):
@@ -44,12 +48,13 @@ class Post(models.Model):
             thumb = img.thumbnail(thumb_size)
             #thumbnail_path = self.image.path.replace('images/','thumbnails/')
             img.save(self.image.path)
-            thumb.save(self.thumbnail.path)
+            thumb.save(self.image.path)
             #self.thumbnail.name = thumbnail_path.split('media/')[-1]
             #self.save(update_fields = ['thumbnail'])
 
 
     published = PublishedManager()
+    objects = models.Manager()
     
     class Meta:
         ordering = ['-publish']

@@ -8,11 +8,17 @@ from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
 from PIL import Image
+from taggit.models import Tag
+
+
 
 # function based post list view
-'''def post_list(request):
+def post_list(request, tag_slug =None):
     post_list = Post.published.all()
-    
+    tag = None
+    if tag_slug: #if there is agiven tag slug
+        tag = get_object_or_404(Tag, slug = tag_slug)
+        post_list = post_list.filter(tags__in = [tag]) #we filter posts by tags in alist since its a many to many relatinship, using the __in field lookup
    # pagination with 3 posts per page
     paginator = Paginator(post_list, 3)
     page_number = request.GET.get('page')
@@ -26,15 +32,21 @@ from PIL import Image
         # if page is not an interger deliver first page
         posts = paginator.page(1)
    # normal posts = paginator.page(page_number)
-    return render(request,'blog/post/list.html',{'posts': posts})'''
+    return render(request,'blog/post/list.html',
+                  {'posts': posts,
+                   'tag':tag}) # passes the new tag variable to the template
 
-# Class Based Post_List View
+'''# Class Based Post_List View
 class PostListView(ListView):
     queryset = Post.published.all() # or model = Post to use the generic manager Post.objects.all()
     context_object_name = 'posts' # default name is object_list
     paginate_by = 3 # defines pagination
-    template_name = 'blog/post/list.html'
+    template_name = 'blog/post/list.html'''
+   
     
+
+
+
 from django.http import Http404
 
 def post_detail(request, year, month, day,post):
