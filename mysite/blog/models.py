@@ -29,12 +29,12 @@ class Post(models.Model):
     image =models.ImageField(null=True,blank=True,upload_to='images/')
    
     status = models.CharField(max_length=2,choices=Status.choices,default = Status.DRAFT)
-    tags = TaggableManager()# allows to add,retrieve and remove tags
+    #tags = TaggableManager()# allows to add,retrieve and remove tags
     
     # overiding save method
 
     def save(self, *args, **kwargs):
-        if not self.slug:
+        if  not self.slug:
             self.slug = slugify(self.title)
             super(Post, self).save(*args, **kwargs)
    

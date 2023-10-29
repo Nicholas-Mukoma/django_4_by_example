@@ -1,12 +1,15 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Post, Comment
-from .forms import EmailPostForm, CommentForm, BlogPostForm, LoginForm
+from .forms import EmailPostForm, CommentForm, BlogPostForm
+from django.contrib.auth.models import User
 from django.core.mail import send_mail
 from django.core.paginator import Paginator , EmptyPage , PageNotAnInteger
 from django.views.generic import ListView # Allow to list any type of objects
 from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
+
+from django.http import HttpResponse
 from PIL import Image
 from taggit.models import Tag
 
@@ -70,6 +73,22 @@ def post_detail(request, year, month, day,post):
                                                    'comments': comments,
                                                    'form': form})
 
+
+@login_required
+def user_posts(request):
+    posts = Post.published.filter(author__username = request.user)
+    paginator = Paginator(posts, 3)
+    page_number = request.GET.get('page', 1)
+    try:
+
+        posts = paginator.page(page_number)
+    except EmptyPage:
+        posts = paginator.page(paginator.num_pages)
+    except PageNotAnInteger:
+        posts = paginator.page(1)
+    return render(request,'blog/post/user_posts.html',{'posts':posts})
+
+
 @login_required
 def upload_post(request):
 
@@ -80,7 +99,7 @@ def upload_post(request):
            post.author = request.user #assignig author to be the user
            post.save()
            
-           
+        return redirect('blog:post_list')
          
     else:
         form = BlogPostForm()
@@ -89,22 +108,6 @@ def upload_post(request):
     )
 
 
-def login_user(request):
-    if request.method == "POST":
-        form = LoginForm(request.POST)
-        if form.is_valid():
-            username = form.cleaned_data['username']
-            password = form.cleaned_data['password']
-            user = authenticate(request, username = username, password = password)
-
-            if user is not None:
-                login(request, user)
-               
-            else:
-                form.add_error(None, 'Invalid username or password')
-        else:
-            form = LoginForm()
-        return render(request, 'blog/login.html', {'form':form})
 
 
 # Sharing posts via email
@@ -154,7 +157,7 @@ def post_comment(request, post_id):
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
 
-def signup(request):
+'''def signup(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
         if form.is_valid():
@@ -163,4 +166,6 @@ def signup(request):
             return redirect('blog:post_list')  # Redirect  any desired destination
     else:
         form = UserCreationForm()
-    return render(request, 'registration/signup.html', {'form': form})
+    return render(request, 'registration/signup.html', {'form': form})'''
+
+

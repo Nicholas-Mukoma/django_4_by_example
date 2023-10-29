@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+    <h1>Dashboard</h1>
+    <p>Welcome to your dashboard {{ profile.user.username }}. You can <a href="{% url 'edit' %}">edit your profile</a>
+    </p>
+    <div>
+        {% if profile.photo %}
+        <img src="{% url 'profile.photo.url' %}" alt="your photo">
+        {% endif %}
+    </div>
+{% endblock %}

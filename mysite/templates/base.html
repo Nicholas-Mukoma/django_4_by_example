@@ -1,24 +1,72 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your Website Title</title>
+    <title>{% block title %}{% endblock %}</title>
     <!-- Add your CSS and other meta tags here -->
+    <link href="{% static '/main.css' %}" rel="stylesheet" >
 </head>
 
 <body>
     <header>
         <!-- Your header content goes here -->
     </header>
-    <nav>
+    <nav id = "header">
         <!-- Your navigation menu or links go here -->
+        <span class = "logo"><a href="{% url 'blog:post_list' %}">Home</a></span>
+        {% if request.user.is_authenticated%}
+            <ul class = "menu">
+                <li class = "selected">
+                    
+                    <a href="{% url 'dashboard' %}">My dashboard</a>
+                  
+                </li>
+                <li class = "selected">
+             
+                    <a href="{% url 'blog:user_posts' %}">My Posts</a>
+                    
+                </li>
+        
+             
+            </ul>
+        {% endif %}
+        <span class = "user">
+            {% if request.user.is_authenticated %}
+                Hello {{ request.user.first_name|default:request.user.username}}
+                <a href="{% url 'logout' %}">Logout</a>
+            {% else %}
+            <ul>
+                <li>
+                    <a href="{% url 'login' %}">Log-in</a>
+                </li>
+                <li>
+                    <a href="{% url 'register' %}">Sign up</a>
+                </li>
+            </ul>
+            {% endif %}
+        </span>
+        
     </nav>
+    {% if messages %}
+        <ul class = "messages">
+            {% for message in messages %}
+                <li class ="{{ message.tags }}">
+                    {{ message|safe }}
+                    <a href="#" class = "close">x</a>
+                </li>
+            {% endfor %}
+
+        </ul>
+    {% endif %}
     <main>
+        <div id = "content">
         {% block content %}
         <!-- The content of child templates will be inserted here -->
         {% endblock %}
+        </div>
     </main>
     <footer>
         <!-- Your footer content goes here -->

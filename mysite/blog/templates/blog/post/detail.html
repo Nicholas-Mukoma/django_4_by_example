@@ -6,11 +6,12 @@
     <h1>{{ post.title }}</h1>
     <p class = 'date'> Published {{ post.publish }} by {{ post.author}}</p>
     
+    {% if post.image %}
     <figure>
         <img src="{{ post.image.url }}" alt=" a photo of {{ post.title }}">
         <figcaption style= "font-size: x-small;">A picture of {{ post.title}} by {{ post.author }}</figcaption>
     </figure>
-    
+    {% endif %}
     
     {{ post.body|linebreaks }}
 

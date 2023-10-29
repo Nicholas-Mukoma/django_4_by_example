@@ -1,9 +1,9 @@
-{% extends "blog/base.html" %}
+{% extends "base.html" %}
 
-{% block title %}My Blog{% endblock%}
+{% block title %}Bloggers{% endblock%}
 
 {% block content%}
-    <h1>My Blog</h1>
+    <h1>Bloggers</h1>
     <!--if a user is accessing the blog,they will see a list of all posts
     if they filter by posts tagged with a specific tag,they will see the tag they are filtering by-->
     {% if tag %}
@@ -23,15 +23,7 @@
             {% endif %}
         </h2>
         
-        <p class = "tags">
-            Tags:
-            {% for tags in post.tags.all %}
-                <a href="{% url 'blog:post_list_by_tag' tag.slug %}">
-                    {{ tag.name }}
-                </a>
-                {% if not forloop.last %},{% endif %}
-            {% endfor %}
-        
+    
         <p class = "date">
             Published {{post.publish}} by {{post.author}}
      
