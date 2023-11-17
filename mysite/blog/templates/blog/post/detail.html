@@ -8,7 +8,7 @@
     
     {% if post.image %}
     <figure>
-        <img src="{{ post.image.url }}" alt=" a photo of {{ post.title }}">
+        <img style="width : 300px; height: auto;" src="{{ post.image.url }}" alt=" a photo of {{ post.title }}">
         <figcaption style= "font-size: x-small;">A picture of {{ post.title}} by {{ post.author }}</figcaption>
     </figure>
     {% endif %}
